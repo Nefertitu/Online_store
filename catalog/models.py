@@ -21,12 +21,12 @@ class Product(models.Model):
     image = models.ImageField(verbose_name='Изображение')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     price = models.DecimalField(verbose_name='Цена за покупку', max_digits=20, decimal_places=2)
-    created_at = models.DateField(verbose_name='Дата создания')
-    updated_at = models.DateField(verbose_name='Дата последнего изменения')
+    created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
+    updated_at = models.DateField(verbose_name='Дата последнего изменения', auto_now=True)
 
 
     def __str__(self):
-        return f'Наименование: {self.name}, цена - {self.price}.'
+        return f'Наименование: {self.name}, категория: {self.category}, цена - {self.price} рублей.'
 
 
     class Meta:
