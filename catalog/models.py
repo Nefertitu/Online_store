@@ -9,6 +9,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'категории'
@@ -33,4 +34,18 @@ class Product(models.Model):
         verbose_name = 'продукт'
         verbose_name_plural = 'продукты'
         ordering = ['name', 'price']
+
+
+class Contact(models.Model):
+    address = models.CharField(max_length=250, verbose_name='Адрес')
+    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    email = models.EmailField(verbose_name='Email')
+
+
+    def __str__(self):
+        return f'Адрес: {self.address}, телефон: {self.phone}, email: {self.email}'
+
+
+    class Meta:
+        verbose_name_plural = 'контакты'
 
