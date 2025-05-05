@@ -14,6 +14,8 @@ python-dotenv = "^1.1.0"
 psycopg2-binary = "^2.9.10"
 ipython = "^9.2.0"
 pillow = "^11.2.1"
+django-stubs-ext = "^5.2.0"
+pydantic = "^2.11.4"
 
 
 [tool.poetry.group.lint.dependencies]
@@ -69,7 +71,8 @@ line_length = 119
 multi_line_output = 3
 skip_gitignore = true
 
-[mypy.plugins.django-stubs]
-django_settings_module = "Online_store.settings"
+[tool.django-stubs]
+django_settings_module = "config.settings"
+strict_settings = true
 
 
