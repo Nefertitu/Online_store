@@ -12,25 +12,57 @@
 
 
 ### Установка
-1. Клонировать репозиторий:
+1. Подготовка базы данных (`PostgreSQL`):
+Перед запуском проекта создайте БД:
+```
+sudo -u postgres psql -c "CREATE DATABASE your_db_name;"
+sudo -u postgres psql -c "CREATE USER your_db_user WITH PASSWORD 'your_db_password';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE your_db_name TO your_db_user;"
+```
+
+2. Клонировать репозиторий:
 ```
 git clone git@github.com:Nefertitu/Online_store.git
+cd Online_store
 ```
-2. Установите зависимости:
+3. Настройка окружения:
+
+Создайте файл .env на основе шаблона (`.env.sample`):
+```
+cp .env.sample .env
+```
+Отредактируйте .env (укажите свои секретные ключи, настройки БД и т.д.)
+
+4. Установка зависимостей:
 ```
 poetry install
 ```
-3. Применить миграции:
-
+5. Миграции базы данных:
 ```
 python manage.py migrate
 ```
-4. Запустить сервер:
+6. Создание суперпользователя (для доступа в админ-панель):
+```
+python manage.py createsuperuser
+```
+Следуйте инструкциям в терминале, чтобы задать логин/пароль.
 
+7. Загрузка тестовых данных (опционально):
+```
+python manage.py add_products
+```
+8. Запуск сервера:
 ```
 python manage.py runserver
 ```
-Проект будет доступен по адресу: http://127.0.0.1:8000
+После запуска откройте в браузере:
+
+[Админ-панель]: http://127.0.0.1:8000/admin/
+
+[Главная страница]: http://127.0.0.1:8000/home/
+
+[Контакты]: http://127.0.0.1:8000/contacts/
+
 
 ## Структура проекта
 Online_store/
