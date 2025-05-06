@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Skystore</title>
+    <title>I F O</title>
     <!-- Подключите статичеcкие файлы со стилями Bootstrap -->
   <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 </head>
 <body>
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5>
+    <h5 class="my-0 mr-md-auto font-weight-normal">I F O</h5>
     <nav class="ms-5">
         <a class="p-2 btn btn-outline-primary" href="/">Каталог</a>
         <a class="p-2 btn btn-outline-primary" href="/contacts">Контакты</a>
@@ -25,20 +25,33 @@
         <div class="col-lg-9 col-md-6 col-sm-12">
             <div class="card mb-4 box-shadow">
                 <div class="card-body">
+                    {% if contact %}
                     <table class="table table-striped">
                         <tr>
-                            <td class="w-25">Страна</td>
-                            <td>USA</td>
+                            <td class="w-25"><strong>Адрес:</strong>  {{ contact.phone }}</td>
                         </tr>
                         <tr>
-                            <td class="w-25">ИНН</td>
-                            <td>91-1144442</td>
+                            <td><strong>Телефон:</strong>  {{ contact.address }}</td>
                         </tr>
                         <tr>
-                            <td class="w-25">Адрес</td>
-                            <td>Redmond,WA,98052-6399</td>
+                            <td class="w-25"><strong>Email:</strong>  {{ contact.email }}</td>
                         </tr>
                     </table>
+                    {% else %}
+        <table class="table table-striped">
+            <tr>
+                <td class="w-25 text-start"><strong>Адрес:</strong> </td>
+                <td class="d-none d-md-table-cell"></td>
+            </tr>
+            <tr>
+                <td><strong>Телефон:</strong> </td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong> </td>
+                <td></td>
+            </tr>
+        </table>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -72,8 +85,8 @@
     <footer class="pt-4 my-md-5 pt-md-5 border-top">
         <div class="row">
             <div class="col-12 col-md">
-                SkyStore
-                <small class="d-block mb-3 text-muted">&copy; 2023</small>
+                I F O
+                <small class="d-block mb-3 text-muted">&copy; 2025</small>
             </div>
             <div class="col-6 col-md">
                 <h5>Категории</h5>
