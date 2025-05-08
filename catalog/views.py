@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from catalog.models import Contact, Product
 
@@ -8,8 +8,11 @@ def home(request: HttpRequest) -> HttpResponse:
     """Контроллер, который обрабатывает запрос и возвращает страницу `home.html`,
     а также информацию о 5-ти последних добавленных товарах"""
 
-    products = Product.objects.all().order_by("-created_at")[:5]
-    return render(request, "home.html", {"products": products})
+    # products = Product.objects.all().order_by("-created_at")[:5]
+    flowers = Product.objects.all()
+    context = {"flowers": flowers}
+    return render(request, "flowers_list.html", context)
+    # return render(request, "base.html", {"products": products})
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
@@ -25,3 +28,10 @@ def contacts(request: HttpRequest) -> HttpResponse:
 
         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
     return render(request, "contacts.html", {"contact": contact})
+
+def flower_detail(request, pk):
+    flower = get_object_or_404(Product, pk=pk)
+    context = {"flower": flower}
+    return render(request, "flower_detail.html", context)
+
+
