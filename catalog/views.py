@@ -8,11 +8,9 @@ def home(request: HttpRequest) -> HttpResponse:
     """Контроллер, который обрабатывает запрос и возвращает страницу `home.html`,
     а также информацию о 5-ти последних добавленных товарах"""
 
-    # products = Product.objects.all().order_by("-created_at")[:5]
     flowers = Product.objects.all()
-    context = {"flowers": flowers}
+    context = {"flowers": flowers,}
     return render(request, "flowers_list.html", context)
-    # return render(request, "base.html", {"products": products})
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
@@ -29,9 +27,12 @@ def contacts(request: HttpRequest) -> HttpResponse:
         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
     return render(request, "contacts.html", {"contact": contact})
 
+
 def flower_detail(request, pk):
     flower = get_object_or_404(Product, pk=pk)
-    context = {"flower": flower}
+    products = Product.objects.all().order_by("-created_at")[:5]
+    context = {"flower": flower,
+               "products": products,}
     return render(request, "flower_detail.html", context)
 
 
