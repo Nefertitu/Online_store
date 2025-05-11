@@ -1,7 +1,8 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from catalog.models import Contact, Product
+from .forms import ProductForm
 
 
 def home(request: HttpRequest) -> HttpResponse:
@@ -34,5 +35,23 @@ def flower_detail(request, pk):
     context = {"flower": flower,
                "products": products,}
     return render(request, "flower_detail.html", context)
+
+
+def success_view(request):
+    return render(request, 'success_page.html', {'message': 'Товар успешно добавлен!'})
+
+
+def add_new_product(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request,'success_page.html')
+    else:
+        form = ProductForm()
+
+    return render(request, 'add_product.html', {'form': form})
+
+
 
 

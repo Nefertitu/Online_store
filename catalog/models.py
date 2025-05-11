@@ -4,7 +4,26 @@ from django.db import models
 class Category(models.Model):
     """Модель категории товаров"""
 
-    name = models.CharField(max_length=100, verbose_name="Наименование")
+    INDOOR_FLOWERS = 'Комнатные горшечные растения'
+    FUCHSIAS = 'Фуксии'
+    UZAMBARA_VIOLETS = 'Узамбарские фиалки (сенполии)'
+    PELARGONIUMS = 'Пеларгонии'
+    SUCCULENTS = 'Суккуленты'
+
+    CATEGORY_FLOWER_CHOICES = [
+        (INDOOR_FLOWERS, 'Комнатные горшечные растения'),
+        (FUCHSIAS, 'Фуксии'),
+        (UZAMBARA_VIOLETS, 'Узамбарские фиалки (сенполии)'),
+        (PELARGONIUMS, 'Пеларгонии'),
+        (SUCCULENTS, 'Суккуленты'),
+    ]
+
+    name = models.CharField(
+        max_length=100,
+        choices=CATEGORY_FLOWER_CHOICES,
+        default=INDOOR_FLOWERS,
+        verbose_name="Наименование"
+    )
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     def __str__(self) -> str:

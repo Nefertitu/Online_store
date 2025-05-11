@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="alert alert-success mt-3">
+    <h4>{{ message }}</h4>
+    <a href="{% url 'catalog:add_product' %}" class="btn btn-primary me-3 mt-5 mb-3">Добавить еще один товар</a>
+    <a href="{% url 'catalog:base' %}" class="btn btn-success mt-5 mb-3">На главную</a>
+</div>
+{% endblock %}
