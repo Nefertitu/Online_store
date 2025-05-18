@@ -1,8 +1,9 @@
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import UpdateView, CreateView, DeleteView
-from django.urls import reverse_lazy, reverse
-from blog.models import Blog
 from django.db.models import QuerySet
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
+from blog.models import Blog
 
 
 class BlogListView(ListView):

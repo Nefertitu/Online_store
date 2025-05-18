@@ -205,10 +205,17 @@
               <br>
               Комнатные Цветы Онлайн
             </p>
+            {% if "catalog" in request.path %}
             <p>
-              <a href="{% url 'catalog:product_form' %}" class="btn btn-primary my-2">Добавить растение</a>
+              <a href="{% url 'catalog:product_form' %}" class="btn btn-primary my-2">Добавить товар</a>
 <!--              <a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
             </p>
+            {% elif "blog" in request.path %}
+            <p>
+              <a href="{% url 'blogs:blog_form' %}" class="btn btn-primary my-2">Создать пост</a>
+<!--              <a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+            </p>
+            {% endif %}
           </div>
         </div>
       </section>
