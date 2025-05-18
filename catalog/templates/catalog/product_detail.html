@@ -1,4 +1,4 @@
-{%extends 'base.html' %}
+{%extends 'catalog/base.html' %}
 {% load my_tags %}
 {% block content %}
 <div class="album py-5 bg-body-tertiary">
@@ -7,17 +7,17 @@
           <div class="row">
             <div class="col-md-6">
               <div class="card shadow-sm">
-                   <img src="{{ flower.image|media_filter }}"  class="img-fluid" style="height: 400px; object-fit: cover;">
+                   <img src="{{ object.image|media_filter }}"  class="img-fluid" style="height: 400px; object-fit: cover;">
                 <div class="card-body">
-                  <p class="card-text">Название: {{ flower.name|upper }}</p>
-                  <p class="card-text">Категория: {{ flower.category }}</p>
-                  <p class="card-text">Описание: {{ flower.description }}</p>
-                  <p class="card-text">Цена: {{ flower.price }} руб.</p>
+                  <p class="card-text">Название: {{ object.name|upper }}</p>
+                  <p class="card-text">Категория: {{ object.category }}</p>
+                  <p class="card-text">Описание: {{ object.description }}</p>
+                  <p class="card-text">Цена: {{ object.price }} руб.</p>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                         <a class="p-2 btn btn-outline-success" href="{% url 'catalog:base' %}">Вернуться</a>
+                         <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_list' %}">Вернуться</a>
                     </div>
-                    <small class="text-body-secondary">{{ flower.updated_at }}</small>
+                    <small class="text-body-secondary">{{ object.updated_at }}</small>
                   </div>
                 </div>
               </div>
@@ -28,10 +28,10 @@
         <div class="card-body">
           <h4 class="text-start ps-0 mb-3">НОВИНКИ </h4>
           <ul class="list-unstyled ms-4">
-             {% for product in products %}
+             {% for object in latest_objects %}
              <li class="d-flex align-items-center mb-2">
                 <span class="bullet me-2">•</span>
-                {{product.category}} - {{ product.name }} - {{ product.price }} руб.
+                 <p class="mb-1 mt-2">{{ object.name }} ({{object.category}}) - {{ object.price }} руб.</p>
              </li>
             {% endfor %}
           </ul>
