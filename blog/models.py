@@ -15,7 +15,7 @@ class Blog(models.Model):
         help_text="Введите свое имя (никнейм)",
         blank=True,
         null=True,
-        default="Автор не указан"
+        default="Автор не указан",
     )
     content = models.TextField(
         verbose_name="Описание",
@@ -41,7 +41,7 @@ class Blog(models.Model):
     )
 
     def __str__(self) -> str:
-        """Строковое представление категории"""
+        """Строковое представление поста"""
         return f"Заголовок - {self.title}, дата создания - {self.created_at}"
 
 
