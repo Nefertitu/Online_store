@@ -1,3 +1,5 @@
+from typing import Optional, Any
+
 from django.db.models import QuerySet
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
@@ -21,14 +23,14 @@ class BlogDetailView(DetailView):
 
     model = Blog
 
-    def get_object(self, queryset=None):
+    def get_object(self, queryset: Optional[QuerySet]=None) -> Blog:
         """Увеличивает количество просмотров поста при каждом его открытии"""
         self.object = super().get_object(queryset)
         self.object.counter += 1
         self.object.save()
         return self.object
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> dict:
         """Дополняет контекст шаблона отображения поста"""
         context = super().get_context_data(**kwargs)
         context["latest_objects"] = Blog.objects.filter(is_published=True).order_by("-created_at")[:5]
@@ -50,7 +52,7 @@ class BlogUpdateView(UpdateView):
     fields = ["title", "author", "content", "preview", "is_published", "counter"]
     success_url = reverse_lazy("blogs:blog_list")
 
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         """Возвращает на страницу поста после его редактирования"""
         return reverse("blogs:blog_detail", args=[self.kwargs.get("pk")])
 
