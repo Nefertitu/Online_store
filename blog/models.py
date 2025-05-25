@@ -45,7 +45,7 @@ class Blog(models.Model):
         return f"Заголовок - {self.title}, дата создания - {self.created_at}"
 
 
-class Meta:
-    verbose_name = "Запись"
-    verbose_name_plural = "Записи"
-    ordering = ["title", "content", "created_at", "counter"]
+    class Meta:
+        verbose_name = "Запись"
+        verbose_name_plural = "Записи"
+        ordering = ["title", "content", "created_at", "counter"]
