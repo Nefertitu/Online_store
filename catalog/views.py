@@ -1,19 +1,58 @@
+from typing import Any
+
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from catalog.models import Contact, Product
 
-from .forms import ProductForm
+
+class ProductsListView(ListView):
+    """Класс для отображения списка всех товаров"""
+
+    model = Product
+    paginate_by = 6
 
 
-def home(request: HttpRequest) -> HttpResponse:
-    """Контроллер, который возвращает главную страницу"""
+class ProductCreateView(CreateView):
+    """Класс для создания нового товара"""
 
-    flowers = Product.objects.all()
-    context = {
-        "flowers": flowers,
-    }
-    return render(request, "flowers_list.html", context)
+    model = Product
+    fields = ["name", "description", "image", "category", "price"]
+    success_url = reverse_lazy("catalog:product_list")
+
+
+class ProductDetailView(DetailView):
+    """Класс для детального отображения товара"""
+
+    model = Product
+
+    def get_context_data(self, **kwargs: Any) -> dict:
+        """Добавляет дополнительные данные в контекст шаблона отображения товара"""
+        context = super().get_context_data(**kwargs)
+        context["latest_objects"] = Product.objects.filter().order_by("-created_at")[:5]
+        return context
+
+
+class ProductUpdateView(UpdateView):
+    """Класс для редактирования существующего товара"""
+
+    model = Product
+    fields = ["name", "description", "image", "category", "price"]
+    success_url = reverse_lazy("catalog:product_list")
+
+    def get_success_url(self) -> str:
+        """Для отображения детальной страницы товара после её редактирования"""
+        return reverse("catalog:product_detail", args=[self.kwargs.get("pk")])
+
+
+class ProductDeleteView(DeleteView):
+    """Класс для удаления товара"""
+
+    model = Product
+    success_url = reverse_lazy("catalog:product_list")
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
@@ -28,37 +67,4 @@ def contacts(request: HttpRequest) -> HttpResponse:
         message = request.POST.get("message")  # noqa: F841
 
         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
-    return render(request, "contacts.html", {"contact": contact})
-
-
-def flower_detail(request: HttpRequest, pk: int) -> HttpResponse:
-    """Контроллер для отображения страницы с подробной информацией о товаре,
-    а также информацией о 5-ти последних добавленных товарах"""
-
-    flower = get_object_or_404(Product, pk=pk)
-    products = Product.objects.all().order_by("-created_at")[:5]
-    context = {
-        "flower": flower,
-        "products": products,
-    }
-    return render(request, "flower_detail.html", context)
-
-
-def success_view(request: HttpRequest) -> HttpResponse:
-    """Контроллер для отображения `success_page` (`Товар успешно добавлен`)"""
-    return render(request, "success_page.html", {"message": "Товар успешно добавлен!"})
-
-
-def add_new_product(request: HttpRequest) -> HttpResponse:
-    """Контроллер для отображения страницы с формой для добавления товара и
-    возможностью обработки POST_запроса добавления товара"""
-
-    if request.method == "POST":
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return render(request, "success_page.html")
-    else:
-        form = ProductForm()
-
-    return render(request, "add_product.html", {"form": form})
+    return render(request, "catalog/contacts.html", {"contact": contact})

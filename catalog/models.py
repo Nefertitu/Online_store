@@ -36,8 +36,16 @@ class Category(models.Model):
 class Product(models.Model):
     """Модель продукта/товара"""
 
-    name = models.CharField(max_length=150, verbose_name="Наименование")
-    description = models.TextField(verbose_name="Описание", blank=True, null=True)
+    name = models.CharField(
+        max_length=150,
+        verbose_name="Наименование",
+        help_text="Введите название сорта",
+    )
+    description = models.TextField(
+        verbose_name="Описание",
+        blank=True,
+        null=True,
+    )
     image = models.ImageField(
         verbose_name="Изображение",
         upload_to="flowers/photo",
@@ -45,10 +53,29 @@ class Product(models.Model):
         null=True,
         help_text="Загрузите изображение",
     )
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products")
-    price = models.DecimalField(verbose_name="Цена за покупку", max_digits=20, decimal_places=2)
-    created_at = models.DateField(verbose_name="Дата создания", auto_now_add=True)
-    updated_at = models.DateField(verbose_name="Дата последнего изменения", auto_now=True)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="products",
+    )
+    price = models.DecimalField(
+        verbose_name="Цена за покупку",
+        max_digits=20,
+        decimal_places=2,
+    )
+    created_at = models.DateField(
+        verbose_name="Дата создания",
+        auto_now_add=True,
+    )
+    updated_at = models.DateField(
+        verbose_name="Дата последнего изменения",
+        auto_now=True,
+    )
+    # views_counter = models.PositiveIntegerField(
+    #     verbose_name="Счетчик просмотров",
+    #     help_text="Укажите количество просмотров",
+    #     default=0,
+    # )
 
     def __str__(self) -> str:
         """Строковое отображение продукта/товара"""

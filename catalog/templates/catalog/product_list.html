@@ -1,0 +1,51 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+<div class="album py-5 bg-body-tertiary">
+        <div class="container">
+
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for flower in object_list %}
+            <div class="col">
+              <div class="card shadow-sm">
+                <img src="{{ flower.image|media_filter }}"  class="img-fluid" style="height: 300px; object-fit: cover;">
+                <div class="card-body">
+                  <p class="card-text mt-3 mb-3">
+                    {{ flower.name|upper }}
+                    <br>
+                    <br>
+                    {{ flower.description|truncatechars:100 }}
+                    <br>
+                    <br>
+                    {{ flower.price }} рублей
+                  </p>
+                  <div class="d-flex justify-content-between align-items-center">
+<!--                    <div class="btn-group">-->
+                      <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_detail' flower.pk %}">Посмотреть</a>
+                      <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_update' flower.pk %}">Редактировать</a>
+                      <a class="p-2 btn btn-outline-secondary" href="{% url 'catalog:product_confirm_delete' flower.pk %}">Удалить</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+</div>
+{% if is_paginated and page_obj.paginator.num_pages > 1 %}
+  <div class="d-flex justify-content-end mt-5">
+    <div class="btn-group">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary"><-Назад</a>
+        {% else %}
+            <span class="btn btn-secondary"><-Назад</span>
+        {% endif %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary">Вперед-></a>
+        {% else %}
+            <span class="btn btn-secondary">Вперед-></span>
+        {% endif %}
+        </div>
+  </div>
+{% endif %}
+{% endblock %}
