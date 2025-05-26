@@ -27,6 +27,7 @@ class ProductCreateView(CreateView):
 
 class ProductDetailView(DetailView):
     """Класс для детального отображения товара"""
+
     model = Product
 
     def get_context_data(self, **kwargs: Any) -> dict:
@@ -41,7 +42,7 @@ class ProductUpdateView(UpdateView):
     """Класс для редактирования существующего товара"""
 
     model = Product
-    fields = ["name", "description", "image", "category", "price"]
+    form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
     def get_success_url(self) -> str:

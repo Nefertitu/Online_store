@@ -19,9 +19,15 @@ class Category(models.Model):
     ]
 
     name = models.CharField(
-        max_length=100, choices=CATEGORY_FLOWER_CHOICES, default=INDOOR_FLOWERS, verbose_name="Наименование"
+        max_length=100,
+        choices=CATEGORY_FLOWER_CHOICES,
+        default=INDOOR_FLOWERS,
+        verbose_name="Наименование",
+        help_text="Выберите название категории",
     )
-    description = models.TextField(verbose_name="Описание", blank=True, null=True)
+    description = models.TextField(
+        verbose_name="Описание", blank=True, null=True, help_text="Введите описание категории"
+    )
 
     def __str__(self) -> str:
         """Строковое представление категории"""

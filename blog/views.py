@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Any, Optional
 
 from django.db.models import QuerySet
 from django.urls import reverse, reverse_lazy
