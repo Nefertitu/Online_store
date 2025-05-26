@@ -52,6 +52,7 @@ class Product(models.Model):
         blank=True,
         null=True,
         help_text="Загрузите изображение",
+        unique=False,
     )
     category = models.ForeignKey(
         Category,

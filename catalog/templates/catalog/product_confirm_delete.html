@@ -12,7 +12,7 @@
                         <div class="card-body">
                             {% csrf_token %}
                             <div class="btn-group ">
-                                    <a class="p-2 btn btn-danger">Удалить растение</a>
+                                    <a class="p-2 btn btn-danger" href="{% url 'catalog:product_list' %}">Удалить растение</a>
                                     <a class="p-2 btn btn-success" href="{% url 'catalog:product_list' %}">Отменить</a>
                             </div>
                         </div>

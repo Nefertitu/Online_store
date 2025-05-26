@@ -4,10 +4,15 @@
         <div class="row text-start">
             <div class="col-lg-8 col-md-6 col-sm-12">
                 <form class="row" method="post" enctype="multipart/form-data">
-                    <h2 class="fw-light mb-4">Добавить (редактировать) товар</h2>
                     <div class="card mb-4 box-shadow">
+                        {% if object %}
+                        <h2 class="fw-light mb-4">Редактировать товар</h2>
+                        {% else %}
+                        <h2 class="fw-light mb-4">Добавить товар</h2>
+                        {% endif %}
                         <div class="card-body">
                             {% csrf_token %}
+                            {{ form.non_field_errors }}
                             {{ form.as_p }}
                             <button type="submit" class="btn btn-primary">
                                 {% if object %}
@@ -16,6 +21,7 @@
                                 Добавить товар
                                 {% endif %}
                             </button>
+                            <a class="p-2 btn btn-success" href="{% url 'catalog:product_list' %}">Отменить</a>
                         </div>
                     </div>
                 </form>
