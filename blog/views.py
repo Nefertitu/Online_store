@@ -23,7 +23,7 @@ class BlogDetailView(DetailView):
 
     model = Blog
 
-    def get_object(self, queryset: Optional[QuerySet]=None) -> Blog:
+    def get_object(self, queryset: Optional[QuerySet] = None) -> Blog:
         """Увеличивает количество просмотров поста при каждом его открытии"""
         self.object = super().get_object(queryset)
         self.object.counter += 1

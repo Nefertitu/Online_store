@@ -27,11 +27,11 @@ class ProductCreateView(CreateView):
 
 class ProductDetailView(DetailView):
     """Класс для детального отображения товара"""
-
     model = Product
 
     def get_context_data(self, **kwargs: Any) -> dict:
         """Добавляет дополнительные данные в контекст шаблона отображения товара"""
+
         context = super().get_context_data(**kwargs)
         context["latest_objects"] = Product.objects.filter().order_by("-created_at")[:5]
         return context
