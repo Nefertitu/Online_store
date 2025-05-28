@@ -15,7 +15,7 @@
                         <div class="card-body">
                             {% csrf_token %}
                             <div class="btn-group ">
-                                    <a class="p-2 btn btn-danger">Удалить пост</a>
+                                    <button type="submit"a class="p-2 btn btn-danger">Удалить пост</button>
                                     <a class="p-2 btn btn-success" href="{% url 'blogs:blog_list' %}">Отменить</a>
                             </div>
                         </div>
