@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from catalog.forms import CategoryForm
 from catalog.models import Category, Contact, Product
 
 
@@ -14,6 +15,7 @@ class CategoryAdmin(admin.ModelAdmin):
         "name",
         "description",
     )
+    form = CategoryForm
 
 
 @admin.register(Product)

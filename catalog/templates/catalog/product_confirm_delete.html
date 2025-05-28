@@ -3,17 +3,20 @@
 {% block content %}
     <div class="container">
         <div class="row text-start">
-            <div class="col-lg-6     col-md-6 col-sm-12">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <form class="row" method="post" enctype="multipart/form-data">
                     <div class="card mb-4 box-shadow">
-                        <h5 class="card-text">Действительно хотите удалить {{ object.name }}?</h5>
+                        <h5 class="card-text mb-3">Действительно хотите удалить товар:</h5>
+                        <p>Название сорта: '{{ object.name }}'</p>
+                        <p>Категория: {{ object.category }}</p>
+                        <p>Стоимость: {{ object.price }} рублей?</p>
                         <img src="{{ object.image|media_filter }}"  class="img-fluid mb-3 mt-3" style="height: 400px; object-fit: cover;">
 
                         <div class="card-body">
                             {% csrf_token %}
-                            <div class="btn-group ">
-                                    <a class="p-2 btn btn-danger">Удалить растение</a>
-                                    <a class="p-2 btn btn-success" href="{% url 'catalog:product_list' %}">Отменить</a>
+                            <div class="btn-group">
+                                <button type="submit" class="p-2 btn btn-danger" href="{% url 'catalog:product_list' %}">Удалить растение</button>
+                                <a class="p-2 btn btn-success" href="{% url 'catalog:product_list' %}">Отменить</a>
                             </div>
                         </div>
                     </div>

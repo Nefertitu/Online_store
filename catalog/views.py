@@ -6,6 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
+from catalog.forms import ProductForm
 from catalog.models import Contact, Product
 
 
@@ -20,7 +21,7 @@ class ProductCreateView(CreateView):
     """Класс для создания нового товара"""
 
     model = Product
-    fields = ["name", "description", "image", "category", "price"]
+    form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
 
@@ -31,6 +32,7 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict:
         """Добавляет дополнительные данные в контекст шаблона отображения товара"""
+
         context = super().get_context_data(**kwargs)
         context["latest_objects"] = Product.objects.filter().order_by("-created_at")[:5]
         return context
@@ -40,7 +42,7 @@ class ProductUpdateView(UpdateView):
     """Класс для редактирования существующего товара"""
 
     model = Product
-    fields = ["name", "description", "image", "category", "price"]
+    form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
     def get_success_url(self) -> str:

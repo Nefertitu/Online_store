@@ -44,7 +44,6 @@ class Blog(models.Model):
         """Строковое представление поста"""
         return f"Заголовок - {self.title}, дата создания - {self.created_at}"
 
-
     class Meta:
         verbose_name = "Запись"
         verbose_name_plural = "Записи"
