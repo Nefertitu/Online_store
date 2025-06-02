@@ -1,10 +1,12 @@
 from typing import Any, Optional
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
+from blog.forms import BlogForm
 from blog.models import Blog
 
 
@@ -37,19 +39,19 @@ class BlogDetailView(DetailView):
         return context
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin, CreateView):
     """Класс для создания новой записи блога (поста)"""
 
     model = Blog
-    fields = ["title", "author", "content", "preview", "is_published", "counter"]
+    form_class = BlogForm
     success_url = reverse_lazy("blogs:blog_list")
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin, UpdateView):
     """Класс для редактирования поста"""
 
     model = Blog
-    fields = ["title", "author", "content", "preview", "is_published", "counter"]
+    form_class = BlogForm
     success_url = reverse_lazy("blogs:blog_list")
 
     def get_success_url(self) -> str:

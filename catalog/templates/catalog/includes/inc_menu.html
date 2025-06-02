@@ -17,7 +17,10 @@
                 <li class="nav-item">
                     <form method="post" action="{% url 'users:logout' %}" style="display:inline">
                     {% csrf_token %}
-                        <button type="submit" class="btn btn-link nav text-white">Выйти</button>
+                        <button type="submit" class="btn btn-link nav">Выйти</button>
+                    </form>
+                    <form>
+                        <a href="{% url 'users:user_update' %}" class="btn btn-link nav">Редактировать профиль</a>
                     </form>
                 </li>
                 {% else %}

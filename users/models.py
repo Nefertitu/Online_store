@@ -1,13 +1,22 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
-from phonenumber_field.modelfields import PhoneNumberField
+from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField   # type: ignore[import-untyped]
 
 
 class User(AbstractUser):
-    username = None
+    """Модель пользователя с кастомными полями.
+    Заменяет стандартный `username` на `email`
+    в качестве основного идентификатора."""
+
+    username = None   # type: ignore[assignment]
     email = models.EmailField(unique=True, verbose_name="Email")
-    phone_number = PhoneNumberField(region="RU", blank=True, null=True, verbose_name="Телефон", help_text="Введите номер телефона")
-    avatar = models.ImageField(upload_to="users/avatars/", blank=True, null=True, verbose_name="Аватар", help_text="Загрузите свой аватар")
+    phone_number = PhoneNumberField(
+        region="RU", blank=True, null=True, verbose_name="Телефон", help_text="Введите номер телефона"
+    )
+    avatar = models.ImageField(
+        upload_to="users/avatars/", blank=True, null=True, verbose_name="Аватар", help_text="Загрузите свой аватар"
+    )
+    token = models.CharField(max_length=100, verbose_name="Token", blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -16,6 +25,6 @@ class User(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Строковое представление объекта пользователя"""
         return self.email
-
