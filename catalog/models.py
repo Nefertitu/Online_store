@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 
 class Category(models.Model):
     """Модель категории товаров"""
@@ -92,6 +94,13 @@ class Product(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default=DRAFT,
+    )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="Владелец",
     )
 
     def __str__(self) -> str:

@@ -102,6 +102,14 @@ class ProductForm(StyleFormMixin, ModelForm):
         return image
 
 
+class ProductModeratorForm(StyleFormMixin, ModelForm):
+    """Форма для модераторов продуктов"""
+
+    class Meta:
+        model = Product
+        fields = ("status", )
+
+
 class CategoryForm(StyleFormMixin, ModelForm):
     """Форма для работы с категориями товаров"""
 

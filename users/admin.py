@@ -15,4 +15,3 @@ class UserAdmin(admin.ModelAdmin):
         "email",
         "phone_number",
     )
-    form = CustomUserCreationForm
