@@ -13,7 +13,20 @@
               <h4>Навигация</h4>
               <ul class="list-unstyled">
                 <li><a href="{% url 'catalog:product_list' %}" class="text-white">Главная</a></li>
-                <li><a href="#" class="text-white">Вход</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <form method="post" action="{% url 'users:logout' %}" style="display:inline">
+                    {% csrf_token %}
+                        <button type="submit" class="btn btn-link nav">Выйти</button>
+                    </form>
+                    <form>
+                        <a href="{% url 'users:user_update' %}" class="btn btn-link nav">Редактировать профиль</a>
+                    </form>
+                </li>
+                {% else %}
+                <li><a href="{% url 'users:login' %}" class="text-white">Вход</a></li>
+                <li><a href="{% url 'users:register' %}" class="text-white">Регистрация</a></li>
+                {% endif %}
                 <li><a href="{% url 'catalog:contacts' %}" class="text-white">Контакты</a></li>
                 <li><a href="{% url 'blog:blog_list' %}" class="text-white">Блог</a></li>
               </ul>

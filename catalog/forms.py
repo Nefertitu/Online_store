@@ -24,7 +24,7 @@ class StyleFormMixin(forms.Form):
         for fild_name, fild in self.fields.items():
             if isinstance(fild, BooleanField):
                 fild.widget.attrs["class"] = "form-check-input"
-            if isinstance(fild, ChoiceField):
+            elif isinstance(fild, ChoiceField):
                 fild.widget.attrs["class"] = "form-select"
             else:
                 fild.widget.attrs["class"] = "form-control"

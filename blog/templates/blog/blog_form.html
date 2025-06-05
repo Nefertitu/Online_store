@@ -1,5 +1,7 @@
 {% extends 'catalog/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
+
     <div class="container">
         <div class="row text-start">
             <div class="col-lg-8 col-md-6 col-sm-12">
@@ -8,7 +10,7 @@
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
                             {% csrf_token %}
-                            {{ form.as_p }}
+                            {{ form|crispy }}
                             <button type="submit" class="btn btn-primary">
                                 {% if object %}
                                 Сохранить изменения
