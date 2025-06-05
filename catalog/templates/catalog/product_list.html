@@ -5,25 +5,28 @@
         <div class="container">
 
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for flower in object_list %}
+            {% for product in object_list %}
             <div class="col">
               <div class="card shadow-sm">
-                <img src="{{ flower.image|media_filter }}"  class="img-fluid" style="height: 300px; object-fit: cover;">
+                <img src="{{ product.image|media_filter }}"  class="img-fluid" style="height: 300px; object-fit: cover;">
                 <div class="card-body">
                   <p class="card-text mt-3 mb-3">
-                    {{ flower.name|upper }}
+                    {{ product.name|upper }}
                     <br>
                     <br>
-                    {{ flower.description|truncatechars:100 }}
+                    {{ product.description|truncatechars:100 }}
                     <br>
                     <br>
-                    {{ flower.price }} рублей
+                    {{ product.price }} рублей
                   </p>
                   <div class="d-flex justify-content-between align-items-center">
-<!--                    <div class="btn-group">-->
-                      <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_detail' flower.pk %}">Посмотреть</a>
-                      <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_update' flower.pk %}">Редактировать</a>
-                      <a class="p-2 btn btn-outline-secondary" href="{% url 'catalog:product_confirm_delete' flower.pk %}">Удалить</a>
+                      {% if perms.catalog.can_unpublish_product and perms.catalog.can_delete_product or user == product.owner %}
+                      <a class="p-2 btn btn-outline-secondary" href="{% url 'catalog:product_confirm_delete' product.pk %}">Удалить</a>
+                      <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_detail' product.pk %}">Посмотреть</a>
+                      <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:product_update' product.pk %}">Редактировать</a>
+                      {% else %}
+                      <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_detail' product.pk %}">Посмотреть</a>
+                      {% endif %}
                   </div>
                 </div>
               </div>

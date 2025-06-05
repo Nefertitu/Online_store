@@ -37,7 +37,7 @@ class ProductForm(StyleFormMixin, ModelForm):
 
     class Meta:
         model = Product
-        fields = "__all__"
+        exclude = ["owner", ]
 
     def clean_field(self, field_name: str) -> Any:
         """Общий метод валидации текстовых полей на запрещенные слова"""

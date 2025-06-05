@@ -1,5 +1,6 @@
-from typing import Any
+from typing import Any, Type
 
+from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import QuerySet
@@ -36,6 +37,22 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("catalog:product_list")
 
 
+    def form_valid(self, form: ProductForm) -> HttpResponse:
+        """ Обработка валидной формы - привязка продукта к текущему пользователю """
+
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+    def get_form_class(self) -> Type[forms.BaseForm]:
+        """ Возвращает класс формы в зависимости от прав пользователя """
+
+        user = self.request.user
+        if user.groups.filter(name="admin").exists():
+            return ProductForm
+        raise PermissionDenied
+
+
 class ProductDetailView(DetailView):
     """ Класс для детального отображения товара """
 
@@ -60,9 +77,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         """ Для отображения детальной страницы товара после её редактирования """
         return reverse("catalog:product_detail", args=[self.kwargs.get("pk")])
 
-    def get_form_class(self):
-        """  """
+    def get_form_class(self) -> Type[forms.BaseForm]:
+        """ Возвращает класс формы в зависимости от прав пользователя """
+
         user = self.request.user
+        if user == self.object.owner:
+            return ProductForm
         if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
             return ProductModeratorForm
         raise PermissionDenied
@@ -73,6 +93,16 @@ class ProductDeleteView(DeleteView):
 
     model = Product
     success_url = reverse_lazy("catalog:product_list")
+
+    def get_form_class(self) -> Type[forms.BaseForm]:
+        """ Возвращает класс формы в зависимости от прав пользователя """
+
+        user = self.request.user
+        if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
+            return ProductForm
+        if user == self.object.owner:
+            return ProductForm
+        raise PermissionDenied
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
