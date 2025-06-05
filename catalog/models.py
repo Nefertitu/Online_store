@@ -42,6 +42,16 @@ class Category(models.Model):
 class Product(models.Model):
     """Модель продукта/товара"""
 
+    DRAFT = "draft"
+    PUBLISHED = "published"
+    ARCHIVED = "archived"
+
+    STATUS_CHOICES = [
+        (DRAFT, "Черновик"),
+        (PUBLISHED, "Опубликовано"),
+        (ARCHIVED, "В архиве")
+    ]
+
     name = models.CharField(
         max_length=150,
         verbose_name="Наименование",
@@ -78,11 +88,11 @@ class Product(models.Model):
         verbose_name="Дата последнего изменения",
         auto_now=True,
     )
-    # views_counter = models.PositiveIntegerField(
-    #     verbose_name="Счетчик просмотров",
-    #     help_text="Укажите количество просмотров",
-    #     default=0,
-    # )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=DRAFT,
+    )
 
     def __str__(self) -> str:
         """Строковое отображение продукта/товара"""
