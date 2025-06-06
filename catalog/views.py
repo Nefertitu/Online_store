@@ -16,11 +16,10 @@ from core.mixins import AdminCheckMixin
 
 
 class ProductsListView(AdminCheckMixin, ListView):
-    """ Класс для отображения списка всех товаров """
+    """Класс для отображения списка всех товаров"""
 
     model = Product
     paginate_by = 6
-
 
     def get_queryset(self) -> QuerySet[Product]:
         """Добавляет условие об отображении продуктов с отметкой 'published'"""
@@ -31,22 +30,20 @@ class ProductsListView(AdminCheckMixin, ListView):
 
 
 class ProductCreateView(AdminCheckMixin, LoginRequiredMixin, CreateView):
-    """ Класс для создания нового товара """
+    """Класс для создания нового товара"""
 
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
-
     def form_valid(self, form: ProductForm) -> HttpResponse:
-        """ Обработка валидной формы - привязка продукта к текущему пользователю """
+        """Обработка валидной формы - привязка продукта к текущему пользователю"""
 
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
-
     def get_form_class(self) -> Type[forms.BaseForm]:
-        """ Возвращает класс формы в зависимости от прав пользователя """
+        """Возвращает класс формы в зависимости от прав пользователя"""
 
         user = self.request.user
         if user.groups.filter(name="admin").exists():
@@ -55,12 +52,12 @@ class ProductCreateView(AdminCheckMixin, LoginRequiredMixin, CreateView):
 
 
 class ProductDetailView(DetailView):
-    """ Класс для детального отображения товара """
+    """Класс для детального отображения товара"""
 
     model = Product
 
     def get_context_data(self, **kwargs: Any) -> dict:
-        """ Добавляет дополнительные данные в контекст шаблона отображения товара """
+        """Добавляет дополнительные данные в контекст шаблона отображения товара"""
 
         context = super().get_context_data(**kwargs)
         context["latest_objects"] = Product.objects.filter().order_by("-created_at")[:5]
@@ -68,18 +65,18 @@ class ProductDetailView(DetailView):
 
 
 class ProductUpdateView(AdminCheckMixin, LoginRequiredMixin, UpdateView):
-    """ Класс для редактирования существующего товара """
+    """Класс для редактирования существующего товара"""
 
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
     def get_success_url(self) -> str:
-        """ Для отображения детальной страницы товара после её редактирования """
+        """Для отображения детальной страницы товара после её редактирования"""
         return reverse("catalog:product_detail", args=[self.kwargs.get("pk")])
 
     def get_form_class(self) -> Type[forms.BaseForm]:
-        """ Возвращает класс формы в зависимости от прав пользователя """
+        """Возвращает класс формы в зависимости от прав пользователя"""
 
         user = self.request.user
         if user == self.object.owner:
@@ -90,13 +87,13 @@ class ProductUpdateView(AdminCheckMixin, LoginRequiredMixin, UpdateView):
 
 
 class ProductDeleteView(AdminCheckMixin, DeleteView):
-    """ Класс для удаления товара """
+    """Класс для удаления товара"""
 
     model = Product
     success_url = reverse_lazy("catalog:product_list")
 
     def get_form_class(self) -> Type[forms.BaseForm]:
-        """ Возвращает класс формы в зависимости от прав пользователя """
+        """Возвращает класс формы в зависимости от прав пользователя"""
 
         user = self.request.user
         if user.has_perm("catalog.can_delete_product"):
@@ -107,9 +104,9 @@ class ProductDeleteView(AdminCheckMixin, DeleteView):
 
 
 def contacts(request: HttpRequest) -> HttpResponse:
-    """ Контроллер, который обрабатывает POST-запрос на странице 'contacts' и
+    """Контроллер, который обрабатывает POST-запрос на странице 'contacts' и
     отображает сообщение об успешной отправке данных. В обычном режиме отображается
-    страница с контактными данными и форма для отправки сообщения """
+    страница с контактными данными и форма для отправки сообщения"""
 
     contact = Contact.objects.first()
     if request.method == "POST":

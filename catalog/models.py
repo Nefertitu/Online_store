@@ -48,11 +48,7 @@ class Product(models.Model):
     PUBLISHED = "published"
     ARCHIVED = "archived"
 
-    STATUS_CHOICES = [
-        (DRAFT, "Черновик"),
-        (PUBLISHED, "Опубликовано"),
-        (ARCHIVED, "В архиве")
-    ]
+    STATUS_CHOICES = [(DRAFT, "Черновик"), (PUBLISHED, "Опубликовано"), (ARCHIVED, "В архиве")]
 
     name = models.CharField(
         max_length=150,
@@ -76,11 +72,13 @@ class Product(models.Model):
         Category,
         on_delete=models.CASCADE,
         related_name="products",
+        help_text="Выберите категорию",
     )
     price = models.DecimalField(
         verbose_name="Цена за покупку",
         max_digits=20,
         decimal_places=2,
+        help_text="Укажите цену",
     )
     created_at = models.DateField(
         verbose_name="Дата создания",
@@ -94,6 +92,7 @@ class Product(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default=DRAFT,
+        help_text="Выберите статус публикации",
     )
     owner = models.ForeignKey(
         User,
@@ -101,6 +100,7 @@ class Product(models.Model):
         blank=True,
         null=True,
         related_name="owner_product",
+        help_text="Владелец продукта (создатель записи)",
     )
 
     def __str__(self) -> str:

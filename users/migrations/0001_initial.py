@@ -2,7 +2,7 @@
 
 import django.contrib.auth.models
 import django.utils.timezone
-import phonenumber_field.modelfields   # type: ignore[import-untyped]
+import phonenumber_field.modelfields  # type: ignore[import-untyped]
 from django.db import migrations, models
 
 

@@ -7,7 +7,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from blog.forms import BlogForm, BlogContentManagerForm
+from blog.forms import BlogContentManagerForm, BlogForm
 from blog.models import Blog
 from core.mixins import ContentManagerCheckMixin
 
@@ -23,10 +23,7 @@ class BlogListView(ContentManagerCheckMixin, ListView):
         queryset = super().get_queryset()
         user = self.request.user
         if user.is_authenticated:
-            return queryset.filter(
-                Q(is_published=True) |
-                Q(owner_post=user)
-            )
+            return queryset.filter(Q(is_published=True) | Q(owner_post=user))
         return queryset.filter(is_published=True)
 
 
@@ -57,7 +54,7 @@ class BlogCreateView(ContentManagerCheckMixin, LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("blogs:blog_list")
 
     def get_form_class(self) -> Type[BlogForm]:
-        """Добавляет условие о проверке прав пользователя """
+        """Добавляет условие о проверке прав пользователя"""
 
         user = self.request.user
         if user.is_authenticated:
@@ -76,8 +73,8 @@ class BlogUpdateView(ContentManagerCheckMixin, LoginRequiredMixin, UpdateView):
         """Возвращает на страницу поста после его редактирования"""
         return reverse("blogs:blog_detail", args=[self.kwargs.get("pk")])
 
-    def get_form_class(self) -> Type[BlogContentManagerForm|BlogForm]:
-        """Добавляет условие о проверке прав пользователя """
+    def get_form_class(self) -> Type[BlogContentManagerForm | BlogForm]:
+        """Добавляет условие о проверке прав пользователя"""
 
         user = self.request.user
         if user == self.object.owner_post:
@@ -94,7 +91,7 @@ class BlogDeleteView(ContentManagerCheckMixin, LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("blogs:blog_list")
 
     def get_form_class(self) -> Type[BlogForm]:
-        """Добавляет условие о проверке прав пользователя """
+        """Добавляет условие о проверке прав пользователя"""
 
         user = self.request.user
         if user == self.object.owner_post:

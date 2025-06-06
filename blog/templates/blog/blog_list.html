@@ -28,6 +28,8 @@
                       <a class="p-2 btn btn-outline-success" href="{% url 'blogs:blog_detail' post.pk %}">Посмотреть</a>
                       <a class="p-2 btn btn-outline-primary" href="{% url 'blogs:blog_update' post.pk %}">Редактировать</a>
                       <a class="p-2 btn btn-outline-secondary" href="{% url 'blogs:blog_confirm_delete' post.pk %}">Удалить</a>
+                    {% else %}
+                      <a class="p-2 btn btn-outline-success" href="{% url 'blogs:blog_detail' post.pk %}">Посмотреть</a>
                     {% endif %}
                   </div>
                 </div>
