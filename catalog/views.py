@@ -12,9 +12,10 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from catalog.forms import ProductForm, ProductModeratorForm
 from catalog.models import Contact, Product
+from core.mixins import AdminCheckMixin
 
 
-class ProductsListView(ListView):
+class ProductsListView(AdminCheckMixin, ListView):
     """ Класс для отображения списка всех товаров """
 
     model = Product
@@ -29,7 +30,7 @@ class ProductsListView(ListView):
         return super().get_queryset().filter(status="published")
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(AdminCheckMixin, LoginRequiredMixin, CreateView):
     """ Класс для создания нового товара """
 
     model = Product
@@ -66,7 +67,7 @@ class ProductDetailView(DetailView):
         return context
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(AdminCheckMixin, LoginRequiredMixin, UpdateView):
     """ Класс для редактирования существующего товара """
 
     model = Product
@@ -83,12 +84,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         user = self.request.user
         if user == self.object.owner:
             return ProductForm
-        if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
+        if user.has_perm("catalog.can_unpublish_product"):
             return ProductModeratorForm
         raise PermissionDenied
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(AdminCheckMixin, DeleteView):
     """ Класс для удаления товара """
 
     model = Product
@@ -98,7 +99,7 @@ class ProductDeleteView(DeleteView):
         """ Возвращает класс формы в зависимости от прав пользователя """
 
         user = self.request.user
-        if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
+        if user.has_perm("catalog.can_delete_product"):
             return ProductForm
         if user == self.object.owner:
             return ProductForm

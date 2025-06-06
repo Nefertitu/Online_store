@@ -1,23 +1,33 @@
-from typing import Any, Optional
+from typing import Any, Optional, Type
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import QuerySet
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q, QuerySet
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from blog.forms import BlogForm
+from blog.forms import BlogForm, BlogContentManagerForm
 from blog.models import Blog
+from core.mixins import ContentManagerCheckMixin
 
 
-class BlogListView(ListView):
+class BlogListView(ContentManagerCheckMixin, ListView):
     """Класс для отображения списка записей в блоге"""
 
     model = Blog
 
     def get_queryset(self) -> QuerySet[Blog]:
         """Добавляет условие об отображении записей блога с отметкой 'is_published'"""
-        return super().get_queryset().filter(is_published=True)
+
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.is_authenticated:
+            return queryset.filter(
+                Q(is_published=True) |
+                Q(owner_post=user)
+            )
+        return queryset.filter(is_published=True)
 
 
 class BlogDetailView(DetailView):
@@ -39,15 +49,23 @@ class BlogDetailView(DetailView):
         return context
 
 
-class BlogCreateView(LoginRequiredMixin, CreateView):
+class BlogCreateView(ContentManagerCheckMixin, LoginRequiredMixin, CreateView):
     """Класс для создания новой записи блога (поста)"""
 
     model = Blog
     form_class = BlogForm
     success_url = reverse_lazy("blogs:blog_list")
 
+    def get_form_class(self) -> Type[BlogForm]:
+        """Добавляет условие о проверке прав пользователя """
 
-class BlogUpdateView(LoginRequiredMixin, UpdateView):
+        user = self.request.user
+        if user.is_authenticated:
+            return BlogForm
+        raise PermissionDenied
+
+
+class BlogUpdateView(ContentManagerCheckMixin, LoginRequiredMixin, UpdateView):
     """Класс для редактирования поста"""
 
     model = Blog
@@ -58,9 +76,29 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
         """Возвращает на страницу поста после его редактирования"""
         return reverse("blogs:blog_detail", args=[self.kwargs.get("pk")])
 
+    def get_form_class(self) -> Type[BlogContentManagerForm|BlogForm]:
+        """Добавляет условие о проверке прав пользователя """
 
-class BlogDeleteView(DeleteView):
+        user = self.request.user
+        if user == self.object.owner_post:
+            return BlogForm
+        elif user.has_perm("blog.can_change_post"):
+            return BlogContentManagerForm
+        raise PermissionDenied
+
+
+class BlogDeleteView(ContentManagerCheckMixin, LoginRequiredMixin, DeleteView):
     """Класс для удаления поста"""
 
     model = Blog
     success_url = reverse_lazy("blogs:blog_list")
+
+    def get_form_class(self) -> Type[BlogForm]:
+        """Добавляет условие о проверке прав пользователя """
+
+        user = self.request.user
+        if user == self.object.owner_post:
+            return BlogForm
+        elif user.has_perm("blog.can_delete_post"):
+            return BlogForm
+        raise PermissionDenied

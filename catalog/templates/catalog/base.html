@@ -205,16 +205,21 @@
               <br>
               Комнатные Цветы Онлайн
             </p>
-            {% if "catalog" in request.path %}
-            {% if user.is_authenticated and user.groups.all.0.name == "admin" %}
+            {% if user.is_authenticated and not is_admin and not is_content_manager %}
+            <p>
+              <a href="{% url 'blog:blog_form' %}" class="btn btn-success my-2">Создать пост</a>
+            </p>
+            {% endif %}
+            {% if is_admin %}
             <p>
               <a href="{% url 'catalog:product_form' %}" class="btn btn-primary my-2">Добавить товар</a>
-<!--              <a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+              <a href="{% url 'blog:blog_form' %}" class="btn btn-success my-2">Создать пост</a>
             </p>
-            {% elif "blog" in request.path and user.is_authenticated %}
+            {% endif %}
+            {% if "blog" in request.path %}
+            {% if is_content_manager %}
             <p>
-              <a href="{% url 'blogs:blog_form' %}" class="btn btn-primary my-2">Создать пост</a>
-<!--              <a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+              <a href="{% url 'blog:blog_form' %}" class="btn btn-success my-2">Создать пост</a>
             </p>
             {% endif %}
             {% endif %}

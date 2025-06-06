@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import User
+
 
 class Blog(models.Model):
     """Модель блога"""
@@ -39,6 +41,13 @@ class Blog(models.Model):
         help_text="Укажите количество просмотров",
         default=0,
     )
+    owner_post = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="owner_post",
+    )
 
     def __str__(self) -> str:
         """Строковое представление поста"""
@@ -48,3 +57,8 @@ class Blog(models.Model):
         verbose_name = "Запись"
         verbose_name_plural = "Записи"
         ordering = ["title", "content", "created_at", "counter"]
+
+        permissions = [
+            ("can_change_post", "Can change post"),
+            ("can_delete_post", "Can delete post"),
+        ]

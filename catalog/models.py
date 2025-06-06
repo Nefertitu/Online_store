@@ -100,7 +100,7 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name="Владелец",
+        related_name="owner_product",
     )
 
     def __str__(self) -> str:
