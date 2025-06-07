@@ -539,14 +539,24 @@ python
 * `True` если пользователь аутентифицирован и состоит в группе `admin`
 * `False` в противном случае
 
-1.3. `class ContentManagerCheckMixin(ContextMixin)`:
+1.3. `class ProductModeratorCheckMixin(ContextMixin)`:
 Назначение:
-Проверяет, принадлежит ли пользователь к группе content manager.
+Проверяет, принадлежит ли пользователь к группе `product moderatorr`.
+
+Методы:
+- `get_context_data(**kwargs)` -> dict:
+Добавляет в контекст переменную `is_product_moderator` (`bool`):
+* `True` для аутентифицированных пользователей в группе `product moderator`
+* `False` для остальных случаев
+
+1.4. `class ContentManagerCheckMixin(ContextMixin)`:
+Назначение:
+Проверяет, принадлежит ли пользователь к группе `content manager`.
 
 Методы:
 - `get_context_data(**kwargs)` -> dict:
 Добавляет в контекст переменную is_content_manager (bool):
-* `True` для аутентифицированных пользователей в группе content manager
+* `True` для аутентифицированных пользователей в группе `content manager`
 * `False` для остальных случаев
 
 

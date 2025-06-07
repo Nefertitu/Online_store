@@ -25,7 +25,8 @@ class AdminCheckMixin(ContextMixin):
     """Миксин для проверки принадлежности к группе `admin`"""
 
     def get_context_data(self, **kwargs: Any) -> Any:
-        """Миксин для проверки принадлежности к группе `admin`"""
+        """Добавляет в контекст флаг `is_admin`, указывающий
+        на принадлежность пользователя к группе `admin`"""
 
         context = super().get_context_data(**kwargs)
         if hasattr(self, "request"):
@@ -34,11 +35,26 @@ class AdminCheckMixin(ContextMixin):
             return context
 
 
+class ProductModeratorCheckMixin(ContextMixin):
+    """Миксин для проверки принадлежности к группе `product moderator`"""
+
+    def get_context_data(self, **kwargs: Any) -> Any:
+        """Добавляет в контекст флаг `is_product_moderator`, указывающий
+        на принадлежность пользователя к группе `product moderator`"""
+
+        context = super().get_context_data(**kwargs)
+        if hasattr(self, "request"):
+            user = self.request.user
+            context["is_product_moderator"] = user.is_authenticated and user.groups.filter(name="product moderator").exists()
+            return context
+
+
 class ContentManagerCheckMixin(ContextMixin):
     """Миксин для проверки принадлежности к группе `content manager`"""
 
     def get_context_data(self, **kwargs: Any) -> Any:
-        """Миксин для проверки принадлежности к группе `content manager`"""
+        """Добавляет в контекст флаг `is_content_manager`, указывающий
+        на принадлежность пользователя к группе `content manager`"""
 
         context = super().get_context_data(**kwargs)
         if hasattr(self, "request"):

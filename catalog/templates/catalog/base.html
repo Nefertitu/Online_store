@@ -210,7 +210,7 @@
               <a href="{% url 'blog:blog_form' %}" class="btn btn-success my-2">Создать пост</a>
             </p>
             {% endif %}
-            {% if is_admin %}
+            {% if is_admin or is_product_manager %}
             <p>
               <a href="{% url 'catalog:product_form' %}" class="btn btn-primary my-2">Добавить товар</a>
               <a href="{% url 'blog:blog_form' %}" class="btn btn-success my-2">Создать пост</a>
