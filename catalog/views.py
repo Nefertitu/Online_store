@@ -12,6 +12,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from catalog.forms import ProductForm, ProductModeratorForm
 from catalog.models import Contact, Product
+from catalog.services import get_products_from_cache
 from core.mixins import AdminCheckMixin
 
 
@@ -25,8 +26,10 @@ class ProductsListView(AdminCheckMixin, ListView):
         """Добавляет условие об отображении продуктов с отметкой 'published'"""
         user = self.request.user
         if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
-            return super().get_queryset().all()
-        return super().get_queryset().filter(status="published")
+            #return super().get_queryset().all()
+            return get_products_from_cache()
+        #return super().get_queryset().filter(status="published")
+        return get_products_from_cache().filter(status="published")
 
 
 class ProductCreateView(AdminCheckMixin, LoginRequiredMixin, CreateView):
