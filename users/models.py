@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField   # type: ignore[import-untyped]
+from phonenumber_field.modelfields import PhoneNumberField  # type: ignore[import-untyped]
 
 
 class User(AbstractUser):
@@ -8,7 +8,7 @@ class User(AbstractUser):
     Заменяет стандартный `username` на `email`
     в качестве основного идентификатора."""
 
-    username = None   # type: ignore[assignment]
+    username = None  # type: ignore[assignment]
     email = models.EmailField(unique=True, verbose_name="Email")
     phone_number = PhoneNumberField(
         region="RU", blank=True, null=True, verbose_name="Телефон", help_text="Введите номер телефона"

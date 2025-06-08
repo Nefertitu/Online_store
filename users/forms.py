@@ -2,7 +2,7 @@ from typing import Any
 
 from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm, UserCreationForm
 
-from catalog.forms import StyleFormMixin
+from core.mixins import StyleFormMixin
 
 from .models import User
 
@@ -34,7 +34,7 @@ class CustomUserChangeForm(StyleFormMixin, UserChangeForm):
 
 
 class CustomPasswordChangeForm(StyleFormMixin, PasswordChangeForm):
-    """ "Кастомная форма для смены пароля с добавленными стилями"""
+    """Кастомная форма для смены пароля с добавленными стилями"""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Инициализация формы"""

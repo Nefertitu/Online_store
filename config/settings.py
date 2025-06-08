@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "catalog",
     "blog",
     "users",
+    "core",
     # Other apps
     "phonenumber_field",
     "crispy_forms",

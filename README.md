@@ -76,13 +76,13 @@ Online_store/
 │   ├── admin.py                    # Настройки админ-панели
 │   ├── apps.py             
 │   └── tests.py             
-├── catalog/                                # Приложение каталога товаров
+├── catalog/                        # Приложение каталога товаров
 │   └── management/
-│       ├───__init__.py
-│       └───commands/
-│           ├───__init__.py
-│           ├───add_products.py     # Кастомная команда наполнения данными
-│           └───del_products.py     # Кастомная команда удаления данных
+│       ├─── __init__.py
+│       └─── commands/
+│           ├─── __init__.py
+│           ├─── add_products.py    # Кастомная команда наполнения данными
+│           └─── del_products.py    # Кастомная команда удаления данных
 │   ├── migrations/                 # Директория для файлов миграции
 │   ├── templates/                  # Шаблоны
 │   │    └── includes/              
@@ -95,6 +95,9 @@ Online_store/
 │   │       ├── product_form.html      # Шаблон страницы `product_form` (форма добавления товара)
 │   │       ├── success_page.html      # Шаблон страницы `product_confirm_delete` (удаление товара)
 │   │       └── contacts.html          # Шаблон страницы `contacts`
+├── core/                              # Приложение для общих компонентов
+│       ├─── __init__.py
+│       └─── mixins.py                 # Общие миксины
 │   ├── templatetags/               # Кастомная логика в шаблонах (фильтр - `media_filter`) 
 │   ├── models.py                   # Модели Категория и Продукт
 │   ├── views.py                    # Контроллеры Продукта
@@ -103,12 +106,12 @@ Online_store/
 │   ├── apps.py             
 │   ├── forms.py                    # Настройки форм             
 │   └── tests.py 
-├── users/                           # Приложение users
+├── users/                          # Приложение users
 │   └── management/
-│   │   ├───__init__.py
-│   │   └───commands/
-│   │       ├───__init__.py
-│   │       ├───csu.py     # Кастомная команда для создания суперпользователя
+│   │   ├─── __init__.py
+│   │   └─── commands/
+│   │       ├─── __init__.py
+│   │       ├─── csu.py             # Кастомная команда для создания суперпользователя
 │   ├── migrations/                 # Директория для файлов миграции
 │   ├── templates/                  # Шаблоны
 │   │    └── users/
@@ -155,10 +158,16 @@ Online_store/
 - `category` - Связь с категорией (ForeignKey)
 - `price` - Цена (DecimalField)
 - `created_at`/`updated_at` - Даты создания и обновления
+- `status` - Статус публикации (CharField), выбор из трех вариантов (опубликовано, черновик, в архиве)
+- `owner` - Связь с пользователем (ForeignKey)
 
 Особенности: Сортировка по названию и цене.
 
 Строковое представление включает название, категорию и цену.
+
+Кастомные разрешения: 
+- `can_unpublish_product` - право смены статуса публикации
+- `can_delete_product` - право удаления продукта
 
 3. Модель `Contact` (Контактные данные)
 Поля:
@@ -183,6 +192,10 @@ Online_store/
 Строковое представление включает заголовок и дату создания поста.
 
 Особенности: Сортировка по заголовкам, контенту, дате создания и количеству просмотров.
+
+Кастомные разрешения: 
+- `can_change_post` - право изменять записи пользователей (посты)
+- `can_delete_post` - право удалять записи пользователей (посты)
 
 ### Приложение `users`
 
@@ -224,6 +237,12 @@ Online_store/
 - Отображаемые поля: id, email, Телефон.
 - Сортировка: по email.
 - Поиск: по email.
+
+6. Groups (`Authentication and autorithation`):
+Содержит 3 группы:
+- `admin`
+- `content manager` (разрешения: изменять и удалять посты пользователей)
+- `product moderator` (разрешения: менять статус публикации и удалять продукт)
 
 
 Как создать суперпользователя:
@@ -293,19 +312,24 @@ Successfully loaded data from fixture
 
 3. `class BlogCreateView(CreateView)`:
 Назначение: Страница для создания нового поста.
+3.1. `get_form_class()` - Добавляет условие о проверке прав пользователя.
 
 4. `class BlogUpdateView(UpdateView)`:
 Назначение: Страница для редактирования поста.
 4.1. `def get_success_url()` - Возвращает на страницу поста после его редактирования.
+4.2. `get_form_class()` - Добавляет условие о проверке прав пользователя.
+
 
 5. `class BlogDeleteView(DeleteView)`:
 Назначение: Страница для удаления поста.
+5.1. `get_form_class()` - Добавляет условие о проверке прав пользователя.
 
 
 ### Приложение `catalog`:
 
 1. `class ProductListView(ListView)`:
 Назначение: Главная страница со всеми товарами.
+1.1. `get_queryset()` - Добавляет условие об отображении продуктов с отметкой 'published'.
 
 2. `class ProductDetailView(DetailView)`:
 Назначение: Страница с детальной информацией о товаре.
@@ -314,13 +338,17 @@ Successfully loaded data from fixture
 
 3. `class ProductCreateView(CreateView)`:
 Назначение: Страница для создания нового товара.
+3.1. `form_valid()` - Обработка валидной формы - привязка продукта к текущему пользователю.
+3.2. `get_form_class()` - Возвращает класс формы в зависимости от прав пользователя.
 
 4. `class ProductUpdateView(UpdateView)`:
 Назначение: Страница для редактирования товара.
 4.1. `def get_success_url()` - Возвращает на страницу товара после его редактирования.
+4.2. `get_form_class()` - Возвращает класс формы в зависимости от прав пользователя.
 
 5. `class ProductDeleteView(DeleteView)`:
 Назначение: Страница для удаления товара.
+5.1. `get_form_class()` - Возвращает класс формы в зависимости от прав пользователя.
 
 6. `contacts()`(контроллер FBV):
 Назначение: Страница контактов с формой обратной связи.
@@ -386,18 +414,7 @@ python
 
 ## Формы приложения `catalog` (`forms.py`):
 
-1.`class StyleFormMixin()`:
-Миксин для автоматической стилизации полей форм Django.
-
-Функциональность:
-- Автоматически добавляет CSS-классы к полям формы:
-* BooleanField → form-check-input
-* ChoiceField → form-select
-* Все остальные поля → form-control
-
-Использование: в пользовательских формах(`ProductForm`).
-
-2. `class ProductForm(StyleFormMixin, forms.ModelForm)`:
+1. `class ProductForm(StyleFormMixin, forms.ModelForm)`:
 Форма для создания и редактирования товаров.
 
 Особенности:
@@ -414,6 +431,13 @@ python
 - `clean_price()` - проверка цены
 - `clean_image()` - валидация изображения
 
+2. `class ProductModeratorForm(StyleFormMixin, ModelForm)`:
+Форма для модераторов продуктов.
+
+Особенности:
+- Автоматически применяет стили из `StyleFormMixin`
+- Содержит только поле `status`. 
+
 ## Формы приложения `blog`:
 
 1. `class BlogForm(StyleFormMixin, ModelForm)`:
@@ -424,6 +448,13 @@ python
 - Валидация обязательных полей (`title`, `author`, `content`)
 - Поддержка загрузки изображений для `preview`
 - Тoggle-переключатель для `is_published`
+
+2.  `class BlogContentManagerForm(StyleFormMixin, ModelForm)`:
+Форма контент менеджера для редактирования записей (постов) пользователей.
+
+Особенности:
+- Автоматически применяет стили из `StyleFormMixin`
+- Содержит поля - `title`, `content`, `preview`, `is_published`.
 
 ## Формы приложения `uers`:
 
@@ -479,6 +510,54 @@ python
 - Подтверждение через два поля
 - Визуальные стили из StyleFormMixin
 - Интеграция с системой валидации паролей Django
+
+## Общие компоненты(`core/*`):
+
+1. `mixins.py` - общие миксины.
+
+1.1. `class StyleFormMixin()`:
+Миксин для автоматической стилизации полей форм Django.
+
+Функциональность:
+- Автоматически добавляет CSS-классы к полям формы:
+* BooleanField → form-check-input
+* ChoiceField → form-select
+* Все остальные поля → form-control
+
+Использование: в пользовательских формах(`ProductForm`).
+
+Также проект включает два универсальных миксина для проверки 
+принадлежности пользователей к группам:
+
+1.2. `class AdminCheckMixin(ContextMixin)`:
+Назначение: 
+Проверяет, принадлежит ли аутентифицированный пользователь к группе `admin`.
+
+Методы:
+- `get_context_data(**kwargs) -> dict`:  
+Добавляет в контекст шаблона переменную `is_admin` (`bool`):
+* `True` если пользователь аутентифицирован и состоит в группе `admin`
+* `False` в противном случае
+
+1.3. `class ProductModeratorCheckMixin(ContextMixin)`:
+Назначение:
+Проверяет, принадлежит ли пользователь к группе `product moderatorr`.
+
+Методы:
+- `get_context_data(**kwargs)` -> dict:
+Добавляет в контекст переменную `is_product_moderator` (`bool`):
+* `True` для аутентифицированных пользователей в группе `product moderator`
+* `False` для остальных случаев
+
+1.4. `class ContentManagerCheckMixin(ContextMixin)`:
+Назначение:
+Проверяет, принадлежит ли пользователь к группе `content manager`.
+
+Методы:
+- `get_context_data(**kwargs)` -> dict:
+Добавляет в контекст переменную is_content_manager (bool):
+* `True` для аутентифицированных пользователей в группе `content manager`
+* `False` для остальных случаев
 
 
 ## Лицензия

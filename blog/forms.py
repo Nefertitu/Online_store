@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from catalog.forms import StyleFormMixin
+from core.mixins import StyleFormMixin
 
 from .models import Blog
 
@@ -11,3 +11,16 @@ class BlogForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Blog
         fields = ("title", "author", "content", "preview", "is_published")
+
+
+class BlogContentManagerForm(StyleFormMixin, ModelForm):
+    """Форма контент менеджера для редактирования записей (постов) пользователей"""
+
+    class Meta:
+        model = Blog
+        fields = (
+            "title",
+            "content",
+            "preview",
+            "is_published",
+        )
