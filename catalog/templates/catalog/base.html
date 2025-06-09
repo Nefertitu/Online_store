@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 {% load static %}
-<!--<!doctype html>-->
-<html lang="en" data-bs-theme="auto">
+
+<html lang="en" data-bs-theme="auto" xmlns="http://www.w3.org/1999/html">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -226,13 +227,35 @@
           </div>
         </div>
       </section>
-  {% block content %}
-  {% endblock %}
-  </main>
+      {% if request.resolver_match.url_name == "product_list" or request.resolver_match.url_name == "product_one_category" %}
+      {% if request.resolver_match.url_name != "/contacts/" %}
+      <form>
+        <div class="col-3">
+          <div class="category-selector">
+            <form method="get" action="{% url 'catalog:product_list' %}">
+              <select name="category" class="form-select" onchange="location = this.value;">
+                  <option value="">Выбор категории товаров</option>
+                  <option value="{% url 'catalog:product_list' %}">Все категории</option>
+                    {% for category in all_categories %}
+                        <option value="{% url 'catalog:product_one_category' category.slug %}"
+                            {% if current_category_slug == category.slug %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+          </div>
+        </div>
+        </form>
+      {% endif %}
+      {% endif %}
+    {% block content %}
+    {% endblock %}
+    </main>
   {% include 'catalog/includes/footer.html' %}
   <script
     src="{% static 'js/bootstrap.bundle.min.js' %}"
-    class="astro-vvvwv3sm"
-  ></script>
+    class="astro-vvvwv3sm">
+  </script>
 </body>
 </html>
