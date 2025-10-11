@@ -93,7 +93,6 @@ class ProductUpdateView(AdminCheckMixin, LoginRequiredMixin, UpdateView):
     """Класс для редактирования существующего товара"""
 
     model = Product
-    form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
     def get_success_url(self) -> str:
@@ -104,6 +103,8 @@ class ProductUpdateView(AdminCheckMixin, LoginRequiredMixin, UpdateView):
         """Возвращает класс формы в зависимости от прав пользователя"""
 
         user = self.request.user
+        self.object = self.get_object()
+
         if user == self.object.owner:
             return ProductForm
         if user.has_perm("catalog.can_unpublish_product"):
