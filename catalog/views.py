@@ -12,10 +12,11 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from catalog.forms import ProductForm, ProductModeratorForm
 from catalog.models import Contact, Product
-from core.mixins import AdminCheckMixin
+from catalog.services import ProductService
+from core.mixins import AdminCheckMixin, ProductModeratorCheckMixin
 
 
-class ProductsListView(AdminCheckMixin, ListView):
+class ProductsListView(AdminCheckMixin, ProductModeratorCheckMixin, ListView):
     """Класс для отображения списка всех товаров"""
 
     model = Product
@@ -23,10 +24,34 @@ class ProductsListView(AdminCheckMixin, ListView):
 
     def get_queryset(self) -> QuerySet[Product]:
         """Добавляет условие об отображении продуктов с отметкой 'published'"""
+
+        product_service = ProductService()
         user = self.request.user
         if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
-            return super().get_queryset().all()
-        return super().get_queryset().filter(status="published")
+            return product_service.get_products_from_cache()
+        return product_service.get_products_from_cache().filter(status="published")
+
+
+class ProductsOneCategoryList(ListView):
+    """Класс для отображения списка всех товаров одной категории"""
+
+    model = Product
+    template_name = "catalog/product_one_category.html"
+
+    def get_queryset(self) -> QuerySet[Product]:
+        """Добавляет условие об отображении продуктов с отметкой 'published'
+        или отображение всех товаров для пользователей с соответствующими правами"""
+
+        user = self.request.user
+        category_slug = self.kwargs.get("category_slug")
+        if not category_slug:
+            return Product.objects.none()
+
+        service = ProductService()
+
+        if user.has_perm("catalog.can_unpublish_product") and user.has_perm("catalog.can_delete_product"):
+            return service.get_products_one_category(category_slug)
+        return service.get_products_one_category(category_slug).filter(status="published")
 
 
 class ProductCreateView(AdminCheckMixin, LoginRequiredMixin, CreateView):
@@ -68,7 +93,6 @@ class ProductUpdateView(AdminCheckMixin, LoginRequiredMixin, UpdateView):
     """Класс для редактирования существующего товара"""
 
     model = Product
-    form_class = ProductForm
     success_url = reverse_lazy("catalog:product_list")
 
     def get_success_url(self) -> str:
@@ -79,6 +103,8 @@ class ProductUpdateView(AdminCheckMixin, LoginRequiredMixin, UpdateView):
         """Возвращает класс формы в зависимости от прав пользователя"""
 
         user = self.request.user
+        self.object = self.get_object()
+
         if user == self.object.owner:
             return ProductForm
         if user.has_perm("catalog.can_unpublish_product"):
@@ -111,8 +137,9 @@ def contacts(request: HttpRequest) -> HttpResponse:
     contact = Contact.objects.first()
     if request.method == "POST":
         name = request.POST.get("name")
-        phone = not request.POST.get("phone")  # noqa: F841
+        phone = request.POST.get("phone")  # noqa: F841
         message = request.POST.get("message")  # noqa: F841
 
         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
+
     return render(request, "catalog/contacts.html", {"contact": contact})
