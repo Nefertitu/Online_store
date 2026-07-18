@@ -45,7 +45,9 @@ class ProductModeratorCheckMixin(ContextMixin):
         context = super().get_context_data(**kwargs)
         if hasattr(self, "request"):
             user = self.request.user
-            context["is_product_moderator"] = user.is_authenticated and user.groups.filter(name="product moderator").exists()
+            context["is_product_moderator"] = (
+                user.is_authenticated and user.groups.filter(name="product moderator").exists()
+            )
             return context
 
 

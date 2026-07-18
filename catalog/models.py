@@ -1,4 +1,8 @@
+from typing import Any
+
 from django.db import models
+from django.utils.text import slugify
+from unidecode import unidecode
 
 from users.models import User
 
@@ -27,6 +31,10 @@ class Category(models.Model):
         verbose_name="Наименование",
         help_text="Выберите название категории",
     )
+    slug = models.SlugField(
+        unique=True,
+        max_length=50,
+    )
     description = models.TextField(
         verbose_name="Описание", blank=True, null=True, help_text="Введите описание категории"
     )
@@ -34,6 +42,11 @@ class Category(models.Model):
     def __str__(self) -> str:
         """Строковое представление категории"""
         return self.name
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "категория"
